@@ -13,6 +13,11 @@ player_width = player_dimensions.get_width()
 player_height = player_dimensions.get_height()
 background = pygame.image.load("./Background/NewNewForest.jpg")
 background_music = pygame.mixer.music.load("./Musics/monde_1.mp3")
+stabbing_sound_1 = pygame.mixer.Sound("./Sounds/slash_1.mp3")
+stabbing_sound_2 = pygame.mixer.Sound("./Sounds/slash_2.mp3")
+slime_die_sound = pygame.mixer.Sound("./Sounds/slime_die.mp3")
+slime_hurt_sound = pygame.mixer.Sound("./Sounds/slime_hurt.mp3")
+slime_attack_sound = pygame.mixer.Sound("./Sounds/slime_attack.mp3")
 background_width = background.get_width()
 background_height = background.get_height()
 scroll = 0
@@ -117,7 +122,8 @@ hurt = AnimatedSprite(
         "./Sprites/Adventurer_2_Sprites/adventurer-hurt-01.png",
         "./Sprites/Adventurer_2_Sprites/adventurer-hurt-02.png"
     ],
-    scale=5 
+    scale=5,
+    animation_time=0.07 
 )
 
 slime_attack = AnimatedSprite(
@@ -166,7 +172,8 @@ slime_die = AnimatedSprite(
         "./Sprites/Slime_1_Sprites/slime-die-2.png",
         "./Sprites/Slime_1_Sprites/slime-die-3.png"
     ],
-    scale=3 
+    scale=3,
+    animation_time=0.06 
 )
 
 slime_hurt = AnimatedSprite(
@@ -185,6 +192,8 @@ slime_hurt = AnimatedSprite(
 pygame.mixer.music.play()
 sprite = idle
 slime_sprite = slime_idle
+slime_vie = 2
+die_ticks = 15
 all_sprites = pygame.sprite.Group(sprite, slime_sprite)
 running = True
 while running:
@@ -193,28 +202,45 @@ while running:
     dt = clock.tick(FPS) / 1900
     
     if keyspressed[pygame.K_d]:
-        if sprite != walkLeft:
-            all_sprites.remove(sprite)
-            all_sprites.add(walkLeft)
-            sprite = walkLeft
-        player_pos.x += 1000 * dt
+        if die_ticks != 0:
+            if player_pos.x < slime_pos.x - 150:
+                if sprite != walkLeft:
+                    all_sprites.remove(sprite)
+                    all_sprites.add(walkLeft)
+                    sprite = walkLeft
+                player_pos.x += 1000 * dt
+            else:
+                if sprite != hurt:
+                    all_sprites.remove(sprite)
+                    all_sprites.add(hurt)
+                    sprite = hurt
+                player_pos.x -= 560 * dt
+        else:
+            if sprite != walkLeft:
+                    all_sprites.remove(sprite)
+                    all_sprites.add(walkLeft)
+                    sprite = walkLeft
+            player_pos.x += 1000 * dt   
     elif keyspressed[pygame.K_a]:
         if sprite != attack_1:
             all_sprites.remove(sprite)
             all_sprites.add(attack_1)
             sprite = attack_1
+            stabbing_sound_1.play()
         player_pos.x -= 560 * dt
     elif keyspressed[pygame.K_z]:
         if sprite != attack_2:
             all_sprites.remove(sprite)
             all_sprites.add(attack_2)
             sprite = attack_2
+            stabbing_sound_1.play()
         player_pos.x -= 560 * dt
     elif keyspressed[pygame.K_e]:
         if sprite != attack_3:
             all_sprites.remove(sprite)
             all_sprites.add(attack_3)
             sprite = attack_3
+            stabbing_sound_2.play()
         player_pos.x -= 560 * dt
     elif keyspressed[pygame.K_SPACE]:
         if sprite != jump:
@@ -243,36 +269,56 @@ while running:
         
     for i in range(0, tiles):
         screen.blit(background, (i * background_width + scroll, 0))
+
+
         
-    
-    if slime_pos.x >= player_pos.x + 1500:
-        if slime_sprite != slime_idle:
-            all_sprites.remove(slime_sprite)
-            all_sprites.add(slime_idle)
-            slime_sprite = slime_idle
-        slime_pos.x -= 560 * dt
-    elif slime_pos.x > player_pos.x + 150:
-        if slime_sprite != slime_move:
-            all_sprites.remove(slime_sprite)
-            all_sprites.add(slime_move)
-            slime_sprite = slime_move
-        slime_pos.x -= 1400 * dt   
-    elif 0 < slime_pos.x - player_pos.x <= 150:
-        if slime_sprite != slime_attack:
-            all_sprites.remove(slime_sprite)
-            all_sprites.add(slime_attack)
-            slime_sprite = slime_attack
-        slime_pos.x -= 560 * dt
+    if slime_vie > 0:   
+        if slime_pos.x >= player_pos.x + 1500:
+            if slime_sprite != slime_idle:
+                all_sprites.remove(slime_sprite)
+                all_sprites.add(slime_idle)
+                slime_sprite = slime_idle
+            slime_pos.x -= 560 * dt
+        elif slime_pos.x > player_pos.x + 150:
+            if slime_sprite != slime_move:
+                all_sprites.remove(slime_sprite)
+                all_sprites.add(slime_move)
+                slime_sprite = slime_move
+            slime_pos.x -= 1400 * dt   
+        elif (all_sprites.has(attack_1) or all_sprites.has(attack_2) or all_sprites.has(attack_3)) and 0 < slime_pos.x - player_pos.x <= 150:
+            if slime_sprite != slime_hurt:
+                all_sprites.remove(slime_sprite)
+                all_sprites.add(slime_hurt)
+                slime_sprite = slime_hurt
+                slime_vie -= 1
+                slime_attack_sound.stop()
+                slime_hurt_sound.play()
+            slime_pos.x -= 560 * dt
+        elif 0 < slime_pos.x - player_pos.x <= 150:
+            if slime_sprite != slime_attack:
+                all_sprites.remove(slime_sprite)
+                all_sprites.add(slime_attack)
+                slime_sprite = slime_attack
+                slime_attack_sound.play(-1, 0, 0)
+            slime_pos.x -= 560 * dt   
+        else:
+            if slime_sprite != slime_idle:
+                all_sprites.remove(slime_sprite)
+                all_sprites.add(slime_idle)
+                slime_sprite = slime_idle
+            slime_pos.x -= 560 * dt
     else:
-        if slime_sprite != slime_idle:
+        if slime_sprite != slime_die:
             all_sprites.remove(slime_sprite)
-            all_sprites.add(slime_idle)
-            slime_sprite = slime_idle
+            all_sprites.add(slime_die)
+            slime_sprite = slime_die
+            slime_attack_sound.stop()
+            slime_die_sound.play()
         slime_pos.x -= 560 * dt
-        
-        
-        
-        
+        if die_ticks == 0:
+            all_sprites.remove(slime_die)
+        else:
+            die_ticks -= 1       
         
     scroll -= 5
     

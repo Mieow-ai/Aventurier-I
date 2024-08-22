@@ -2,7 +2,7 @@ import pygame
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
-    def __init__(self, left, top, images, scale):
+    def __init__(self, left, top, images, scale, animation_time=0.04):
         super().__init__()
         self.images = []
         width = None
@@ -17,7 +17,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.image = self.images[0]
         self.rect = pygame.Rect(left, top, width, height)
         self.index = 0
-        self.animation_time = 0.04
+        self.animation_time = animation_time
         self.current_time = 0
         
     def select_frame(self, index):
