@@ -10,6 +10,7 @@ pygame.init()
 screen = screenSize(884 , 864)
 running = True
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+slime_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 dt = 0
 Frame = 0
 nextFrame = clock()
@@ -19,6 +20,7 @@ testSpriteWalkUp = makeSprite("./Sprites/Walk/walk_up.png", 8)
 testSpriteWalkRight = makeSprite("./Sprites/Walk/walk_right_down.png", 8)
 testSpriteWalkLeft = makeSprite("./Sprites/Walk/walk_left_down.png", 8)
 testSpriteIdle = makeSprite("./Idle/idle_down.png", 8)
+SlimeSprite = makeSprite("./Sprites/slime-Sheet.png", 21)
 setBackgroundImage("./Background/Forest.png")
 
 sprite = testSpriteIdle
@@ -60,10 +62,6 @@ while running:
     changeSpriteImage(sprite, Frame)
     
     
-        
-        
-    
-
     
     dt = tick(25) / 1900
 
