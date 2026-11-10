@@ -1,15 +1,15 @@
-# Aventurier I
+# Adventurer I
 
-Petit jeu développé avec Python et Pygame. Le programme principal est `aventurier_1.py`.
+Small game developed with Python and Pygame. The main program is `aventurier_1.py`.
 
-## Prérequis
+## Prerequisites
 
 - Python 3
-- `pip` (fourni avec la plupart des installations Python)
+- `pip` (provided with most Python installations)
 
-## Installation et lancement
+## Installation and launch
 
-Ouvrez un terminal dans le dossier du projet, celui qui contient `aventurier_1.py`, puis exécutez :
+Open a terminal in the project directory, the one containing `aventurier_1.py`, then run:
 
 ```bash
 python3 -m venv .venv
@@ -19,28 +19,28 @@ python -m pip install pygame
 python aventurier_1.py
 ```
 
-La fenêtre du jeu s’ouvre. Pour quitter, fermez la fenêtre ou utilisez son bouton de fermeture.
+The game window opens. To quit, close the window or use its close button.
 
-À chaque nouvelle session de terminal, activez de nouveau l’environnement virtuel avant de lancer le jeu :
+At each new terminal session, activate the virtual environment again before launching the game:
 
 ```bash
 source .venv/bin/activate
 python aventurier_1.py
 ```
 
-Sur Windows, les commandes équivalentes d’activation et de lancement sont :
+On Windows, the equivalent activation and launch commands are:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 python aventurier_1.py
 ```
 
-## Commandes
+## Controls
 
 - `D` : avancer
 - `A`, `Z` ou `E` : attaquer
 - `Espace` : sauter
 
-## Fichiers du jeu
+## Game Files
 
-Lancez le script depuis le dossier du projet et gardez les dossiers `Background/`, `Images/`, `Musics/`, `Sounds/` et `Sprites/`, ainsi que `animated_sprites.py`, à leur emplacement. Le jeu utilise ces chemins relatifs pour charger ses images, animations et sons.
+Launch the script from the project directory and keep the folders `Background/`, `Images/`, `Musics/`, `Sounds/` and `Sprites/`, as well as `animated_sprites.py`, in their location. The game uses these relative paths to load its images, animations, and sounds.
